@@ -1,0 +1,13 @@
+Dataset:  slash_survsex.dat
+
+Source: A. Welsh (2010). "On the Perils of Living Dangerously in the Slasher
+Horror Film: Gender Differences in the Association Between Sexual Activity 
+and Survival," Sex Roles, Vol. 62 pp. 762-773
+
+Description: Gender, sexual activity, and survival of 485 characters
+from a random sample of 50 slasher horror films
+
+Variables/ Columns
+Female   8   /* 1=Female, 0=Male
+Sexual Activity   16  /* 1=Present, 0=absent
+Survival  24   /* 1=Survival, 0=death
