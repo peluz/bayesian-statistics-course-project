@@ -6,6 +6,7 @@
 \usepackage{graphicx}
 \usepackage{booktabs}
 \usepackage{tabularx}
+\usepackage{amsmath}
 
 \begin{document}
 \maketitle
@@ -28,16 +29,9 @@ The data\footnote{Welsh, A. On the Perils of Living Dangerously in the Slasher H
 
 As explanatory variables we have the ``Gender'' and ``Involvement in Sexual Activity''. The first is taken to be the biological sex of the character, while the second is true if the character is involved with full or partial nudity or extended physical intimacy with another character. Only characters that suffered some kind of physical aggression are included. This was measured by undergraduate students. Refer to the original paper for a more detailed explanation of the data acquisition process.
 
-45.77\% Female
-32.37\% sexual activity
-37.39\% Female have sexual activity
-28.14\% Male have sexual activity
-17.53\% Survival Rate
-52.87\% Sexual activity are female
-22.52\$ Female survive
-13.30\% Men survive
+Of all characters in the dataset, only 17.53\% survives. The survival rate is higher for women (22.52\%) than for men(13.30\%). In addition, despite women being the minority of cases (45.77\%), 52.87\% of characters involved in sexual activity are women. Table~\ref{tab:sexXgender} summarises the relation between gender and sexual activity. Figure~\ref{fig:pairs} exhibits the relationships between all variables. Note that characters that exhibit sexual activity are very unlikely to survive.
 
-\begin{table}
+\begin{table}[hbtp]
     \centering
     \footnotesize
     \caption{Sexual activity across genders.}
@@ -57,14 +51,24 @@ As explanatory variables we have the ``Gender'' and ``Involvement in Sexual Acti
 
 
 
-\begin{figure}[h]
-    \caption{Relationships between variables}
+\begin{figure}[hbtp]  
     \centering
     \includegraphics[width=0.5\textwidth]{media/pairs.png}
+    \caption{Relationships between variables. Values have been jiggles, since all of them only assume 0 or 1 values.}
+    \label{fig:pairs}
     \end{figure}
 
 \section{Model}
-Since we have a binary response variable, a logistic regression method is appropriate.
+Since we have a binary response variable, a logistic regression method is appropriate. We model the survival of character $i$, $y_i$, as a Bernoulli distribution with parameter $p_i$. Each $p_i$ is in turn, a function of the explanatory variables---Gender and Involvement in Sexual Activity---and learnable $\beta$ parameters. We add an interaction variable that is the product of Gender and Involvement in Sexual Activity in order to directly measure the interaction between such variables. Thus, the model has the following specification:
+\begin{align}
+    y_i | p_i &\stackrel{ind}{\sim} \text{Bern}(p_i),~i=1,\dots,n\\
+    p_i &= \frac{1}{1+\text{exp}\left[-\left(\beta_0 + \beta_1G_i + \beta_2S_i + \beta_3\text{int}_i\right)\right]}\,,
+\end{align}
+where $G_1$, $S_i$ and $int_i$ are the Gender, Involvement in Sexual Activity and interaction variables of character $i$, respectively. Since the beta parameters give us a measure of how much each explanatory variable affects expectation of survival, this model allow us to answer the research questions.
+
+As priors for the beta coefficients we chose a normal prior with mean 0 and variance 25. This prior is fairly noninformative for logistic regression, due to the sigmoid function. A noninformative prior is chosen to reflect our lack of strong a priori beliefs.
+
+We fit the model using RJAGS. We establish fit 3 chains for 6000 iterations, filtering out the first 1000 as the burn-in period. This seemed to be sufficient for convergence (potential scale reduction factors of 1 for all parameters, and autocorrelation approaching zero).
 
 \section{Results}\label{results}
 In this section we describe the results.
